@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Plants care</string>
+
+    <string name="bottom_notification_title">Уведомления</string>
+
+    <string name="bottom_plants_title">Растения</string>
+
+    <string name="bottom_settings_title">Настройки</string>
+
+</resources>
