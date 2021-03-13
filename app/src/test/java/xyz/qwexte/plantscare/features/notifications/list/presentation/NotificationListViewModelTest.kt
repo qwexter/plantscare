@@ -2,7 +2,6 @@ package xyz.qwexte.plantscare.features.notifications.list.presentation
 
 import app.cash.turbine.test
 import junit.framework.Assert.assertEquals
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.After
 import org.junit.Rule
@@ -11,6 +10,7 @@ import xyz.qwexte.plantscare.R
 import xyz.qwexte.plantscare.commontest.TestDispatchersProviderRule
 import xyz.qwexte.plantscare.features.notifications.list.data.GetNotificationsUseCase
 import xyz.qwexte.plantscare.features.notifications.list.data.TutorialUseCase
+import xyz.qwexte.plantscare.features.notifications.list.presentation.models.NotificationsState
 import xyz.qwexte.plantscare.features.notifications.list.presentation.models.TutorialStep
 import kotlin.time.ExperimentalTime
 
@@ -42,7 +42,7 @@ class NotificationListViewModelTest {
             viewModel?.observeState()
                 ?.test {
                     assertEquals(
-                        NotificationListViewModel.NotificationsState.Tutorial(
+                        NotificationsState.Tutorial(
                             listOf(
                                 TutorialStep(
                                     R.string.tutorial_first_text,
@@ -81,7 +81,7 @@ class NotificationListViewModelTest {
         runBlockingTest {
             viewModel?.observeState()?.test {
                 assertEquals(
-                    NotificationListViewModel.NotificationsState.Empty,
+                    NotificationsState.Empty,
                     expectItem()
                 )
             }
@@ -103,7 +103,7 @@ class NotificationListViewModelTest {
         runBlockingTest {
             viewModel?.observeState()?.test {
                 assertEquals(
-                    NotificationListViewModel.NotificationsState.Items(
+                    NotificationsState.Items(
                         items
                     ),
                     expectItem()
