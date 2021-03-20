@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/bacground_gradient"
     tools:context=".MainActivity">
 
     <FrameLayout
@@ -16,6 +17,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
+        style="@style/Widget.App.BottomNavigationView"
         android:id="@+id/main_navigation_bar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
