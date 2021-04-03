@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.combineTransform
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import xyz.qwexte.plantscare.R
@@ -13,7 +13,7 @@ import xyz.qwexte.plantscare.features.notifications.list.data.GetNotificationsUs
 import xyz.qwexte.plantscare.features.notifications.list.data.TutorialUseCase
 import xyz.qwexte.plantscare.features.notifications.list.presentation.models.DateFilter
 import xyz.qwexte.plantscare.features.notifications.list.presentation.models.NotificationsState
-import xyz.qwexte.plantscare.features.notifications.list.presentation.models.TutorialStep
+import xyz.qwexte.plantscare.features.notifications.list.presentation.models.ScheduleItems
 import java.time.LocalDate
 
 class NotificationListViewModel(
@@ -28,7 +28,6 @@ class NotificationListViewModel(
             LocalDate.now().minusDays(15L + it)
         }
     )
-    private val selectedDate = MutableStateFlow(LocalDate.now())
 
     init {
         viewModelScope.launch(dispatchers.io) {
@@ -48,26 +47,38 @@ class NotificationListViewModel(
         }
     }
 
-    fun observeState(): Flow<NotificationsState> = notifications
-
-    fun observeDates(): Flow<List<DateFilter>> = dates.map {
-        it.map { DateFilter(it, it == LocalDate.now()) }
+    fun observeState(): Flow<NotificationsState> = dates.flatMapLatest { dateList ->
+        notifications.map { state ->
+            if (state is NotificationsState.Items) {
+                state.copy(
+                    listOf(
+                        ScheduleItems.Dates(
+                            dateList.map {
+                                DateFilter(it, it == LocalDate.now())
+                            }
+                        )
+                    ) + state.items
+                )
+            } else {
+                state
+            }
+        }
     }
 
-    private fun createTutorial(): NotificationsState.Tutorial {
-        return NotificationsState.Tutorial(
+    private fun createTutorial(): NotificationsState.Items {
+        return NotificationsState.Items(
             listOf(
-                TutorialStep(
+                ScheduleItems.TutorialStep(
                     R.string.tutorial_first_text,
                     R.string.tutorial_first_highlight_text,
                     R.color.purple_200,
                 ),
-                TutorialStep(
+                ScheduleItems.TutorialStep(
                     R.string.tutorial_second_text,
                     R.string.tutorial_second_highlight_text,
                     R.color.purple_200,
                 ),
-                TutorialStep(
+                ScheduleItems.TutorialStep(
                     R.string.tutorial_third_text,
                     R.string.tutorial_third_highlight_text,
                     R.color.purple_200,

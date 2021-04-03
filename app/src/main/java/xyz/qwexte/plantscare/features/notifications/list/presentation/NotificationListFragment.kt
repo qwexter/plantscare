@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.AppBarLayout
 import kotlinx.coroutines.flow.collect
 import xyz.qwexte.plantscare.R
-import xyz.qwexte.plantscare.features.notifications.list.presentation.models.DateFilter
 import xyz.qwexte.plantscare.features.notifications.list.presentation.models.DateFiltersAdapter
 import xyz.qwexte.plantscare.features.notifications.list.presentation.models.NotificationsState
 
@@ -22,7 +21,7 @@ class NotificationListFragment : Fragment(R.layout.fragment_notification_list) {
 
     private var datesAdapter = DateFiltersAdapter()
 
-    private val tutorialAdapter by lazyOf(TutorialStepAdapter())
+    private val tutorialAdapter by lazyOf(ScheduleAdapter())
 
     private val viewModel by viewModels<NotificationListViewModel> {
         NotificationListViewModelFactory()
@@ -34,9 +33,7 @@ class NotificationListFragment : Fragment(R.layout.fragment_notification_list) {
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
             viewModel.observeState().collect(::bindScreenState)
         }
-        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
-            viewModel.observeDates().collect(::bindDates)
-        }
+        recyclerView?.adapter = tutorialAdapter
     }
 
     override fun onDestroyView() {
@@ -53,19 +50,9 @@ class NotificationListFragment : Fragment(R.layout.fragment_notification_list) {
             is NotificationsState.Items -> {
                 emptyView?.visibility = View.GONE
                 recyclerView?.visibility = View.VISIBLE
-            }
-            is NotificationsState.Tutorial -> {
-                emptyView?.visibility = View.GONE
-                recyclerView?.adapter = tutorialAdapter
-                tutorialAdapter.submit(state.items)
-                recyclerView?.visibility = View.VISIBLE
+                tutorialAdapter.submitList(state.items)
             }
         }
-    }
-
-    private fun bindDates(dates: List<DateFilter>) {
-        datesRecyclerView?.adapter = datesAdapter
-        datesAdapter.submitList(dates)
     }
 
     private fun findViews(view: View) {
