@@ -1,10 +1,14 @@
 <resources>
     <string name="app_name">Plants care</string>
 
-    <string name="bottom_notification_title">Уведомления</string>
-
+    <string name="bottom_notification_title">Расписание</string>
     <string name="bottom_plants_title">Растения</string>
-
     <string name="bottom_settings_title">Настройки</string>
 
+    <string name="tutorial_first_text">Потяните вправо, чтобы отметить напоминание как выполненное</string>
+    <string name="tutorial_first_highlight_text">вправо</string>
+    <string name="tutorial_second_text">Потяните влево, чтобы удалить напоминание</string>
+    <string name="tutorial_second_highlight_text">влево</string>
+    <string name="tutorial_third_text">Нажмите на “+” внизу экрана, чтобы добавить напоминание или растение</string>
+    <string name="tutorial_third_highlight_text">+</string>
 </resources>

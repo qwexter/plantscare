@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="CardsStyle" parent="Widget.MaterialComponents.CardView">
+        <item name="cornerRadius">12dp</item>
+        <item name="cardBackgroundColor">@android:color/white</item>
+        <item name="elevation">4dp</item>
+        <item name="shapeAppearance">@style/CardShape</item>
+        <item name="materialThemeOverlay">@style/CardShape</item>
+    </style>
+
+    <style name="CardShape" parent="ShapeAppearance.MaterialComponents.MediumComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">12dp</item>
+    </style>
+
+    <style name="CardThemeOverlay" parent="">
+        <item name="colorSurface">@android:color/white</item>
+    </style>
+</resources>
