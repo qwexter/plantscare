@@ -7,6 +7,7 @@
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/secondaryColor</item>
         <item name="colorSecondaryVariant">@color/secondaryColor</item>
+        <item name="colorOnSurface">#8F98AE</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimary</item>
         <!-- Customize your theme here. -->
@@ -32,6 +33,5 @@
     <style name="ThemeOverlay.App.BottomNavigationView" parent="">
         <item name="colorPrimary">@color/white</item>
         <item name="colorOnPrimary">@color/black</item>
-        <item name="colorOnSurface">#8F98AE</item>
     </style>
 </resources>

@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import xyz.qwexte.plantscare.R
+import xyz.qwexte.plantscare.common.FeatureFlags
 import xyz.qwexte.plantscare.common.coroutines.DispatchersProvider
 import xyz.qwexte.plantscare.features.notifications.list.data.GetNotificationsUseCase
 import xyz.qwexte.plantscare.features.notifications.list.data.TutorialUseCase
@@ -22,7 +23,9 @@ class NotificationListViewModel(
     dispatchers: DispatchersProvider
 ) : ViewModel() {
 
-    private val notifications = MutableStateFlow<NotificationsState>(NotificationsState.Initial)
+    val events get() = _notifications
+
+    private val _notifications = MutableStateFlow<NotificationsState>(NotificationsState.Initial)
     private val dates = MutableStateFlow<List<LocalDate>>(
         (0..30).map {
             LocalDate.now().minusDays(15L + it)
@@ -30,16 +33,42 @@ class NotificationListViewModel(
     )
 
     init {
+        if (FeatureFlags.TUTORIAL) {
+            setupStateWithTutorial(dispatchers, tutorialUseCase, getNotificationsUseCase)
+        } else {
+            setupJustEvents(dispatchers, getNotificationsUseCase)
+        }
+    }
+
+    private fun setupJustEvents(
+        dispatchers: DispatchersProvider,
+        notificationsUseCase: GetNotificationsUseCase
+    ) {
+        viewModelScope.launch(dispatchers.default) {
+            val items = notificationsUseCase.get(Any())
+            if (items.isEmpty()) {
+                _notifications.value = NotificationsState.Empty
+            } else {
+                _notifications.value = NotificationsState.Items(items)
+            }
+        }
+    }
+
+    private fun setupStateWithTutorial(
+        dispatchers: DispatchersProvider,
+        tutorialUseCase: TutorialUseCase,
+        getNotificationsUseCase: GetNotificationsUseCase
+    ) {
         viewModelScope.launch(dispatchers.io) {
-            if (notifications.value == NotificationsState.Initial) {
+            if (_notifications.value == NotificationsState.Initial) {
                 if (tutorialUseCase.canShow()) {
-                    notifications.value = createTutorial()
+                    _notifications.value = createTutorial()
                 } else {
                     val items = getNotificationsUseCase.get(Any())
                     if (items.isEmpty()) {
-                        notifications.value = NotificationsState.Empty
+                        _notifications.value = NotificationsState.Empty
                     } else {
-                        notifications.value =
+                        _notifications.value =
                             NotificationsState.Items(items)
                     }
                 }
@@ -48,7 +77,7 @@ class NotificationListViewModel(
     }
 
     fun observeState(): Flow<NotificationsState> = dates.flatMapLatest { dateList ->
-        notifications.map { state ->
+        _notifications.map { state ->
             if (state is NotificationsState.Items) {
                 state.copy(
                     listOf(
