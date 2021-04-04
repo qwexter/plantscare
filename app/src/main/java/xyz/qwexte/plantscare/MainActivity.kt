@@ -2,8 +2,10 @@ package xyz.qwexte.plantscare
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import xyz.qwexte.plantscare.common.BottomNavigationController
+import xyz.qwexte.plantscare.common.FeatureFlags
 import xyz.qwexte.plantscare.common.HostNavigationItems
 
 class MainActivity : AppCompatActivity() {
@@ -14,6 +16,29 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        setupBottomNavigation()
+        if (supportFragmentManager.findFragmentById(R.id.main_fragment_container) == null) {
+            bottomNavigationController?.let {
+                navigationView?.selectedItemId = it.getDefaultTabResId()
+            }
+        }
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        bottomNavigationController?.let {
+            navigationView?.selectedItemId = it.findTopItemSelection()
+        }
+    }
+
+    override fun onDestroy() {
+        bottomNavigationController = null
+        navigationView?.setOnNavigationItemSelectedListener(null)
+        navigationView = null
+        super.onDestroy()
+    }
+
+    private fun setupBottomNavigation() {
         bottomNavigationController = BottomNavigationController(
             supportFragmentManager,
             listOf(
@@ -36,25 +61,8 @@ class MainActivity : AppCompatActivity() {
             bottomNavigationController?.onSelectTab(it.itemId)
             true
         }
-        if (supportFragmentManager.findFragmentById(R.id.main_fragment_container) == null) {
-            bottomNavigationController?.let {
-                navigationView?.selectedItemId = it.getDefaultTabResId()
-            }
-        }
+        navigationView?.isVisible = FeatureFlags.BOTTOM_NAVIGATION
     }
 
-    override fun onBackPressed() {
-        super.onBackPressed()
-        bottomNavigationController?.let {
-            navigationView?.selectedItemId = it.findTopItemSelection()
-        }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        bottomNavigationController = null
-        navigationView?.setOnNavigationItemSelectedListener(null)
-        navigationView = null
-    }
 }
 

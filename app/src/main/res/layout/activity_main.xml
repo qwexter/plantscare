@@ -19,6 +19,7 @@
     <com.google.android.material.bottomnavigation.BottomNavigationView
         style="@style/Widget.App.BottomNavigationView"
         android:id="@+id/main_navigation_bar"
+        android:visibility="gone"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
