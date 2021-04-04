@@ -11,4 +11,8 @@
     <string name="tutorial_second_highlight_text">влево</string>
     <string name="tutorial_third_text">Нажмите на “+” внизу экрана, чтобы добавить напоминание или растение</string>
     <string name="tutorial_third_highlight_text">+</string>
+
+    <string name="empty_placeholder_events_title">Пока нет напоминаний</string>
+    <string name="empty_placeholder_events_action_text">Создать напоминание</string>
+
 </resources>
